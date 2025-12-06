@@ -10,3 +10,4 @@ scipy
 SimpleITK
 torch
 tqdm
+hydra-core>=1.3,<1.4
