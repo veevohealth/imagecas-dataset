@@ -145,10 +145,19 @@ if __name__ == '__main__':
     epochs=args.epochs
     result_path = r'result/Direct_seg'
 
-    os.environ['CUDA_VISIBLE_DEVICES'] = str(args.gpu_index)
-    torch.cuda.set_device(0)
-    torch.backends.cudnn.enabled = True
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # Device setup: prefer Apple MPS on Mac, then CUDA, otherwise CPU
+    if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+        device = torch.device("mps")
+        print("Using Apple MPS device for training.")
+    elif torch.cuda.is_available():
+        os.environ['CUDA_VISIBLE_DEVICES'] = str(args.gpu_index)
+        torch.cuda.set_device(0)
+        torch.backends.cudnn.enabled = True
+        device = torch.device("cuda")
+        print("Using CUDA device for training.")
+    else:
+        device = torch.device("cpu")
+        print("Using CPU device for training.")
 
     if resolution == 1:
         resolution_name = 'High_resolution'

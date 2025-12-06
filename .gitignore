@@ -1,6 +1,8 @@
 imagecas-dataset/
 venv/
 .venv/
-_pycache__/
 .DS_Store
-data/__pycache__/
+
+# Pycache
+_pycache__/
+*/__pycache__/
