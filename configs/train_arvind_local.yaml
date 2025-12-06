@@ -28,14 +28,3 @@ train:
   gpu_index: 0
   load_num: 0
   pools: 1
-
-{
-  "cells": [],
-  "metadata": {
-    "language_info": {
-      "name": "python"
-    }
-  },
-  "nbformat": 4,
-  "nbformat_minor": 2
-}
