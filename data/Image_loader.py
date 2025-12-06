@@ -25,15 +25,17 @@ class CoronaryImage(Dataset):
     def __getitem__(self, index):
         image_index = self.ID_list[index]
 
-        image_path = os.path.join(self.data_dir, image_index, 'img.nii.gz')
-        label_path = os.path.join(self.label_dir, image_index, 'label.nii.gz')
+        image_path = os.path.join(self.data_dir, image_index, f'{image_index}.img.nii.gz')
+        label_path = os.path.join(self.label_dir, image_index, f'{image_index}.label.nii.gz')
 
         ID = image_index
 
         img_nii = nib.load(image_path)
-        img = img_nii.get_data()
+        # get_fdata() is the recommended API; cast to float32 for PyTorch
+        img = img_nii.get_fdata().astype(np.float32)
         label_nii = nib.load(label_path)
-        label = label_nii.get_data()
+        # Labels are typically integer; ensure a predictable ndarray
+        label = np.asanyarray(label_nii.dataobj)
         img_size = np.array(img.shape)
 
         img = reshape_img(img, self.output_size)

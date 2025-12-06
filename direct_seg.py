@@ -145,11 +145,8 @@ if __name__ == '__main__':
     epochs=args.epochs
     result_path = r'result/Direct_seg'
 
-    # Device setup: prefer Apple MPS on Mac, then CUDA, otherwise CPU
-    if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
-        device = torch.device("mps")
-        print("Using Apple MPS device for training.")
-    elif torch.cuda.is_available():
+    # Device setup: use CUDA if available, otherwise fall back to CPU
+    if torch.cuda.is_available():
         os.environ['CUDA_VISIBLE_DEVICES'] = str(args.gpu_index)
         torch.cuda.set_device(0)
         torch.backends.cudnn.enabled = True
@@ -173,7 +170,8 @@ if __name__ == '__main__':
 
     # 从config.yaml里面读取参数
     with open(config_file) as f:
-        config = yaml.load(f)
+        # Use safe_load to avoid deprecated default loader behavior
+        config = yaml.safe_load(f)
         learning_rate = config['General_parameters']['lr']
         train_path = config['General_parameters']['data_path']
         valid_path = config['General_parameters']['data_path']
@@ -209,11 +207,14 @@ if __name__ == '__main__':
     # 是否加载网络模型
     if load_num == 0:
         for m in net.modules():
-            if isinstance(m, (nn.Conv3d)):
-                nn.init.orthogonal(m.weight)
+            if isinstance(m, nn.Conv3d):
+                nn.init.orthogonal_(m.weight)
     else:
-        net.load_state_dict(torch.load(model_save_path + '/net_%d.pkl' % load_num))
+        net.load_state_dict(torch.load(model_save_path + '/net_%d.pkl' % load_num, map_location="cpu"))
         load_num = load_num + 1
+
+    # Finally move the network to the selected device (CUDA / CPU)
+    net = net.to(device)
 
     net_opt = optim.Adam(net.parameters(), lr=learning_rate)
     if loss_name=='Dice':

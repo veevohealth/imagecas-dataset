@@ -6,3 +6,5 @@ venv/
 # Pycache
 _pycache__/
 */__pycache__/
+
+result/
