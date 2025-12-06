@@ -1,1 +1,12 @@
+monai
+networkx
+nibabel
+numpy
 pandas
+pathos
+pyyaml
+scikit-image
+scipy
+SimpleITK
+torch
+tqdm
