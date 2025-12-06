@@ -1,6 +1,1 @@
-*.change2zip
-*.z01
-*.z02
-*.z03
-*.z04
-.DS_Store
+imagecas-dataset/
