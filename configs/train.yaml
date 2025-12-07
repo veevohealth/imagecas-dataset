@@ -4,8 +4,8 @@ defaults:
 general:
   lr: 0.001
   csv_path: data_list/split_overfit.csv
-  data_path: /Users/arvind/veevohealth/imagecas-dataset/intermediate_data/by_id
-  mid_path: intermediate_data
+  data_path: /Users/arvind/veevohealth/imagecas-dataset/imagecas-dataset/
+  mid_path: imagecas-dataset
 
 train:
   # Cross-validation fold index
